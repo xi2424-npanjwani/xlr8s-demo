@@ -1,0 +1,8 @@
+apiVersion: ""
+git:
+  repoUrl: git@github.com:xi2424-npanjwani/xlr8s-demo.git
+  revision: main
+name: xlr8s-demo-9723
+vars:
+  apps: null
+  policy: null
