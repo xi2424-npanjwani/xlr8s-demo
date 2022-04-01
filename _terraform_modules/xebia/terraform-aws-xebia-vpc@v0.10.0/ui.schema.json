@@ -1,0 +1,878 @@
+{
+    "vars": [
+        {
+            "section": "Provider Configuration",
+            "sectionDec": "Provider Configuration",
+            "expand": false,
+            "type": "input_block",
+            "id": "Provider Configuration",
+            "fields": [
+                {
+                    "component": "input",
+                    "label": "Region",
+                    "type": "text",
+                    "defaultValue": "ap-south-1",
+                    "id": "region",
+                    "hint": "This is the region in which resources will be created",
+                    "store": "region",
+                    "required": false
+                },
+                {
+                    "component": "input",
+                    "label": "Assume Role ARN",
+                    "type": "text",
+                    "defaultValue": "",
+                    "id": "assume_role_arn",
+                    "hint": "Assume role in which account to create",
+                    "store": "assume_role_arn",
+                    "required": false
+                },
+                {
+                    "component": "object_group",
+                    "label": "Extra Tags",
+                    "type": "text",
+                    "defaultValue": {},
+                    "id": "extra_tags",
+                    "hint": "Add extra tags to your resource",
+                    "store": "extra_tags",
+                    "required": false,
+                    "fields": {
+                        "key": {
+                            "component": "input",
+                            "label": "Key",
+                            "type": "text",
+                            "defaultValue": "",
+                            "id": "extra_key",
+                            "hint": "add key here",
+                            "store": "key"
+                        },
+                        "value": {
+                            "component": "input",
+                            "label": "Value",
+                            "type": "text",
+                            "defaultValue": "",
+                            "id": "extra_value",
+                            "hint": "add value here",
+                            "store": "value"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "section": "VPC ",
+            "sectionDec": "Configuring VPC",
+            "expand": false,
+            "type": "input_block",
+            "id": "VPC ",
+            "fields": [
+                {
+                    "component": "input",
+                    "label": "Name",
+                    "type": "text",
+                    "defaultValue": "",
+                    "id": "name",
+                    "hint": "Name to be used on all the resources as identifier",
+                    "store": "name",
+                    "required": true
+                },
+                {
+                    "component": "input",
+                    "label": "CIDR",
+                    "type": "text",
+                    "defaultValue": "",
+                    "id": "cidr",
+                    "hint": "The CIDR block for the VPC. Default value is a valid CIDR, but not acceptable by AWS and should be overridden",
+                    "store": "cidr",
+                    "required": true
+                },
+                {
+                    "component": "multiInput",
+                    "label": "AZs",
+                    "type": "text",
+                    "defaultValue": null,
+                    "id": "azs",
+                    "hint": "A list of availability zones names or ids in the region",
+                    "store": "azs",
+                    "required": false
+                },
+                {
+                    "component": "toggle",
+                    "label": "Enable DNS Hostnames",
+                    "type": "button",
+                    "defaultValue": true,
+                    "id": "enable_dns_hostnames",
+                    "hint": "Should be true to enable DNS hostnames in the VPC",
+                    "store": "enable_dns_hostnames",
+                    "required": false,
+                    "options": [
+                        {
+                            "label": "False",
+                            "value": false
+                        },
+                        {
+                            "label": "True",
+                            "value": true
+                        }
+                    ]
+                },
+                {
+                    "component": "object_group",
+                    "label": "VPC Tags",
+                    "type": "text",
+                    "defaultValue": {},
+                    "id": "vpc_tags",
+                    "hint": "Additional tags for the VPC",
+                    "store": "vpc_tags",
+                    "required": false,
+                    "fields": {
+                        "key": {
+                            "component": "input",
+                            "label": "Key",
+                            "type": "text",
+                            "defaultValue": "",
+                            "id": "extra_key",
+                            "hint": "add key here",
+                            "store": "key"
+                        },
+                        "value": {
+                            "component": "input",
+                            "label": "Value",
+                            "type": "text",
+                            "defaultValue": "",
+                            "id": "extra_value",
+                            "hint": "add value here",
+                            "store": "value"
+                        }
+                    }
+                },
+                {
+                    "component": "object_group",
+                    "label": "Tags",
+                    "type": "text",
+                    "defaultValue": {},
+                    "id": "tags",
+                    "hint": "A map of tags to add to all resources",
+                    "store": "tags",
+                    "required": false,
+                    "fields": {
+                        "key": {
+                            "component": "input",
+                            "label": "Tag",
+                            "type": "text",
+                            "defaultValue": "",
+                            "id": "extra_key",
+                            "hint": "add key here",
+                            "store": "key"
+                        },
+                        "value": {
+                            "component": "input",
+                            "label": "Value",
+                            "type": "text",
+                            "defaultValue": "",
+                            "id": "extra_value",
+                            "hint": "add value here",
+                            "store": "value"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "section": "Public Subnets",
+            "sectionDec": "Configuring Public Subnets ",
+            "expand": false,
+            "type": "input_block",
+            "id": "Public Subnets",
+            "fields": [
+                {
+                    "component": "multiInput",
+                    "label": "Public Subnets",
+                    "type": "text",
+                    "defaultValue": [],
+                    "id": "public_subnets",
+                    "hint": "A list of public subnets inside the VPC",
+                    "store": "public_subnets",
+                    "required": false
+                },
+                {
+                    "component": "object_group",
+                    "label": "Public Subnet Tags",
+                    "type": "text",
+                    "defaultValue": {},
+                    "id": "public_subnet_tags",
+                    "hint": "Additional tags for the public subnets",
+                    "store": "public_subnet_tags",
+                    "required": false,
+                    "fields": {
+                        "key": {
+                            "component": "input",
+                            "label": "Key",
+                            "type": "text",
+                            "defaultValue": "",
+                            "id": "extra_key",
+                            "hint": "add key here",
+                            "store": "key"
+                        },
+                        "value": {
+                            "component": "input",
+                            "label": "Value",
+                            "type": "text",
+                            "defaultValue": "",
+                            "id": "extra_value",
+                            "hint": "add value here",
+                            "store": "value"
+                        }
+                    }
+                },
+                {
+                    "component": "toggle",
+                    "label": "Create IGW",
+                    "type": "button",
+                    "defaultValue": true,
+                    "id": "create_igw",
+                    "hint": "Controls if an Internet Gateway is created for public subnets and the related routes that connect them.",
+                    "store": "create_igw",
+                    "required": false,
+                    "options": [
+                        {
+                            "label": "False",
+                            "value": false
+                        },
+                        {
+                            "label": "True",
+                            "value": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "section": "Private Subnets",
+            "sectionDec": "Configuring Private Subnets",
+            "expand": true,
+            "type": "input_block",
+            "id": "Private Subnets",
+            "fields": [
+                {
+                    "component": "multiInput",
+                    "label": "Private Subnets",
+                    "type": "text",
+                    "defaultValue": [],
+                    "id": "private_subnets",
+                    "hint": "A list of private subnets inside the VPC",
+                    "store": "private_subnets",
+                    "required": false
+                },
+                {
+                    "component": "object_group",
+                    "label": "Private Subnet Tags",
+                    "type": "text",
+                    "defaultValue": {},
+                    "id": "private_subnet_tags",
+                    "hint": "Additional tags for the private subnets",
+                    "store": "private_subnet_tags",
+                    "required": false,
+                    "fields": {
+                        "key": {
+                            "component": "input",
+                            "label": "Key",
+                            "type": "text",
+                            "defaultValue": "",
+                            "id": "extra_key",
+                            "hint": "add key here",
+                            "store": "key"
+                        },
+                        "value": {
+                            "component": "input",
+                            "label": "Value",
+                            "type": "text",
+                            "defaultValue": "",
+                            "id": "extra_value",
+                            "hint": "add value here",
+                            "store": "value"
+                        }
+                    }
+                },
+                {
+                    "component": "toggle",
+                    "label": "Enable Nat Gateway",
+                    "type": "button",
+                    "defaultValue": true,
+                    "id": "enable_nat_gateway",
+                    "hint": "Should be true if you want to provision NAT Gateways for each of your private networks",
+                    "store": "enable_nat_gateway",
+                    "required": false,
+                    "options": [
+                        {
+                            "label": "False",
+                            "value": false
+                        },
+                        {
+                            "label": "True",
+                            "value": true
+                        }
+                    ]
+                },
+                {
+                    "component": "toggle",
+                    "label": "Single Nat Gateway",
+                    "type": "button",
+                    "defaultValue": true,
+                    "id": "single_nat_gateway",
+                    "hint": "Should be true if you want to provision a single shared NAT Gateway across all of your private networks",
+                    "store": "single_nat_gateway",
+                    "required": false,
+                    "options": [
+                        {
+                            "label": "False",
+                            "value": false
+                        },
+                        {
+                            "label": "True",
+                            "value": true
+                        }
+                    ]
+                },
+                {
+                    "component": "toggle",
+                    "label": "One Nat Gateway Per AZ",
+                    "type": "button",
+                    "defaultValue": true,
+                    "id": "one_nat_gateway_per_az",
+                    "hint": "Should be true if you want only one NAT Gateway per availability zone. Requires `var.azs` to be set, and the number of `public_subnets` created to be greater than or equal to the number of availability zones specified in `var.azs`.",
+                    "store": "one_nat_gateway_per_az",
+                    "required": false,
+                    "options": [
+                        {
+                            "label": "False",
+                            "value": false
+                        },
+                        {
+                            "label": "True",
+                            "value": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "section": "Logging",
+            "sectionDec": "Configuring Logging",
+            "expand": true,
+            "type": "input_block",
+            "id": "Logging",
+            "fields": [
+                {
+                    "component": "toggle",
+                    "label": "Enable Flow Log",
+                    "type": "button",
+                    "defaultValue": true,
+                    "id": "enable_flow_log",
+                    "hint": "Whether or not to enable VPC Flow Logs",
+                    "store": "enable_flow_log",
+                    "required": false,
+                    "options": [
+                        {
+                            "label": "False",
+                            "value": false
+                        },
+                        {
+                            "label": "True",
+                            "value": true
+                        }
+                    ]
+                },
+                {
+                    "component": "toggle",
+                    "label": "Create Flow Log Cloudwatch Log Group",
+                    "type": "button",
+                    "defaultValue": true,
+                    "id": "create_flow_log_cloudwatch_log_group",
+                    "hint": "Whether to create CloudWatch log group for VPC Flow Logs",
+                    "store": "create_flow_log_cloudwatch_log_group",
+                    "required": false,
+                    "options": [
+                        {
+                            "label": "False",
+                            "value": false
+                        },
+                        {
+                            "label": "True",
+                            "value": true
+                        }
+                    ]
+                },
+                {
+                    "component": "toggle",
+                    "label": "Create Flow Log Cloudwatch IAM Role",
+                    "type": "button",
+                    "defaultValue": true,
+                    "id": "create_flow_log_cloudwatch_iam_role",
+                    "hint": "Whether to create IAM role for VPC Flow Logs",
+                    "store": "create_flow_log_cloudwatch_iam_role",
+                    "required": false,
+                    "options": [
+                        {
+                            "label": "False",
+                            "value": false
+                        },
+                        {
+                            "label": "True",
+                            "value": true
+                        }
+                    ]
+                },
+                {
+                    "component": "input",
+                    "label": "Flow Log Max Aggregation Interval",
+                    "type": "number",
+                    "defaultValue": 600,
+                    "id": "flow_log_max_aggregation_interval",
+                    "hint": "The maximum interval of time during which a flow of packets is captured and aggregated into a flow log record. Valid Values: `60` seconds or `600` seconds.",
+                    "store": "flow_log_max_aggregation_interval",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "section": "Transit Gateway & Routes",
+            "sectionDec": "Configuring Transit Gateway & Routes",
+            "expand": true,
+            "type": "input_block",
+            "id": "Transit Gateway & Routes",
+            "fields": [
+                {
+                    "component": "input",
+                    "label": "Transit Gateway ID",
+                    "type": "text",
+                    "defaultValue": "",
+                    "id": "transit_gateway_id",
+                    "hint": "",
+                    "store": "transit_gateway_id",
+                    "required": false
+                },
+                {
+                    "component": "object_group",
+                    "label": "TGWA Tags",
+                    "type": "text",
+                    "defaultValue": {},
+                    "id": "tgwa_tags",
+                    "hint": "",
+                    "store": "tgwa_tags",
+                    "required": false,
+                    "fields": {
+                        "key": {
+                            "component": "input",
+                            "label": "Key",
+                            "type": "text",
+                            "defaultValue": "",
+                            "id": "extra_key",
+                            "hint": "add key here",
+                            "store": "key"
+                        },
+                        "value": {
+                            "component": "input",
+                            "label": "Value",
+                            "type": "text",
+                            "defaultValue": "",
+                            "id": "extra_value",
+                            "hint": "add value here",
+                            "store": "value"
+                        }
+                    }
+                },
+                {
+                    "component": "toggle",
+                    "label": "DNS Support",
+                    "type": "button",
+                    "defaultValue": "enable",
+                    "id": "dns_support",
+                    "hint": "Whether DNS support is enabled. Valid values: disable, enable",
+                    "store": "dns_support",
+                    "required": false,
+                    "options": [
+                        {
+                            "value": "disable",
+                            "label": "Disable"
+                        },
+                        {
+                            "value": "enable",
+                            "label": "Enable"
+                        }
+                    ]
+                },
+                {
+                    "component": "toggle",
+                    "label": "IPV6 Support",
+                    "type": "button",
+                    "defaultValue": "disable",
+                    "id": "ipv6_support",
+                    "hint": "Whether IPv6 support is enabled. Valid values: disable, enable",
+                    "store": "ipv6_support",
+                    "required": false,
+                    "options": [
+                        {
+                            "value": "disable",
+                            "label": "Disable"
+                        },
+                        {
+                            "value": "enable",
+                            "label": "Enable"
+                        }
+                    ]
+                },
+                {
+                    "component": "toggle",
+                    "label": "Appliance Mode Support",
+                    "type": "button",
+                    "defaultValue": false,
+                    "id": "appliance_mode_support",
+                    "hint": "",
+                    "store": "appliance_mode_support",
+                    "required": false,
+                    "options": [
+                        {
+                            "label": "False",
+                            "value": false
+                        },
+                        {
+                            "label": "True",
+                            "value": true
+                        }
+                    ]
+                },
+                {
+                    "component": "toggle",
+                    "label": "Transit Gateway Default Route Table Association",
+                    "type": "button",
+                    "defaultValue": false,
+                    "id": "transit_gateway_default_route_table_association",
+                    "hint": "",
+                    "store": "transit_gateway_default_route_table_association",
+                    "required": false,
+                    "options": [
+                        {
+                            "label": "False",
+                            "value": false
+                        },
+                        {
+                            "label": "True",
+                            "value": true
+                        }
+                    ]
+                },
+                {
+                    "component": "toggle",
+                    "label": "Transit Gateway Default Route Table Propagation",
+                    "type": "button",
+                    "defaultValue": false,
+                    "id": "transit_gateway_default_route_table_propagation",
+                    "hint": "",
+                    "store": "transit_gateway_default_route_table_propagation",
+                    "required": false,
+                    "options": [
+                        {
+                            "label": "False",
+                            "value": false
+                        },
+                        {
+                            "label": "True",
+                            "value": true
+                        }
+                    ]
+                },
+                {
+                    "component": "multiInput",
+                    "label": "Destination CIDR Block",
+                    "type": "text",
+                    "defaultValue": [],
+                    "id": "destination_cidr_block",
+                    "hint": "The CIDR block for the private route table. Default value is a valid CIDR, but not acceptable by AWS and should be overridden",
+                    "store": "destination_cidr_block",
+                    "required": false
+                },
+                {
+                    "component": "toggle",
+                    "label": "Create Public Route",
+                    "type": "button",
+                    "defaultValue": false,
+                    "id": "create_public_route",
+                    "hint": "Whether to create additional routes in public or private route tables of the vpc ",
+                    "store": "create_public_route",
+                    "required": false,
+                    "options": [
+                        {
+                            "label": "False",
+                            "value": false
+                        },
+                        {
+                            "label": "True",
+                            "value": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "section": "VPC Endpoints",
+            "sectionDec": "Configuring VPC Endpoints",
+            "expand": true,
+            "type": "input_block",
+            "id": "VPC Endpoints",
+            "fields": [
+                {
+                    "component": "toggle",
+                    "label": "Create Endpoints",
+                    "type": "button",
+                    "defaultValue": false,
+                    "id": "create_endpoints",
+                    "hint": "Determines whether resources will be created",
+                    "store": "create_endpoints",
+                    "required": false,
+                    "options": [
+                        {
+                            "label": "False",
+                            "value": false
+                        },
+                        {
+                            "label": "True",
+                            "value": true
+                        }
+                    ]
+                },
+                {
+                    "component": "rawInput",
+                    "label": "Endpoints",
+                    "type": "text",
+                    "defaultValue": {},
+                    "id": "endpoints",
+                    "hint": "A map of interface and/or gateway endpoints containing their properties and configurations",
+                    "store": "endpoints",
+                    "required": false
+                },
+                {
+                    "component": "multiInput",
+                    "label": "Subnet IDs",
+                    "type": "text",
+                    "defaultValue": [],
+                    "id": "subnet_ids",
+                    "hint": "Default subnets IDs to associate with the VPC endpoints",
+                    "store": "subnet_ids",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "section": "VPC Peering",
+            "sectionDec": "Configuring VPC Peering",
+            "expand": true,
+            "type": "input_block",
+            "id": "VPC Peering",
+            "fields": [
+                {
+                    "component": "toggle",
+                    "label": "Enable Peering",
+                    "type": "button",
+                    "defaultValue": false,
+                    "id": "enable_peering",
+                    "hint": "Boolean value to determine whether to enable peering or not.",
+                    "store": "enable_peering",
+                    "required": false,
+                    "options": [
+                        {
+                            "label": "False",
+                            "value": false
+                        },
+                        {
+                            "label": "True",
+                            "value": true
+                        }
+                    ]
+                },
+                {
+                    "component": "singleSelect",
+                    "label": "Peer Mode",
+                    "type": "select",
+                    "defaultValue": "requester",
+                    "id": "peer_mode",
+                    "hint": "Specifies the vpc peering mode",
+                    "store": "peer_mode",
+                    "required": false,
+                    "options": [
+                        {
+                            "value": "accepter",
+                            "label": "accepter"
+                        },
+                        {
+                            "value": "requester",
+                            "label": "requester"
+                        },
+                        {
+                            "value": "sameaccount",
+                            "label": "sameaccount"
+                        }
+                    ]
+                },
+                {
+                    "component": "input",
+                    "label": "Accepter VPC ID",
+                    "type": "text",
+                    "defaultValue": "",
+                    "id": "accepter_vpc_id",
+                    "hint": "The ID of the accepter VPC with which you are creating the VPC peering connection.",
+                    "store": "accepter_vpc_id",
+                    "required": false
+                },
+                {
+                    "component": "input",
+                    "label": "Accepter VPC Region",
+                    "type": "text",
+                    "defaultValue": "us-east-1",
+                    "id": "accepter_vpc_region",
+                    "hint": "The region of the accepter VPC of the VPC Peering Connection.",
+                    "store": "accepter_vpc_region",
+                    "required": false
+                },
+                {
+                    "component": "input",
+                    "label": "VPC Peering Connection ID",
+                    "type": "text",
+                    "defaultValue": "",
+                    "id": "vpc_peering_connection_id",
+                    "hint": "The VPC Peering Connection ID to manage.",
+                    "store": "vpc_peering_connection_id",
+                    "required": false
+                },
+                {
+                    "component": "toggle",
+                    "label": "Auto Accept Peering",
+                    "type": "button",
+                    "defaultValue": false,
+                    "id": "auto_accept_peering",
+                    "hint": "Whether or not to accept the peering request.",
+                    "store": "auto_accept_peering",
+                    "required": false,
+                    "options": [
+                        {
+                            "label": "False",
+                            "value": false
+                        },
+                        {
+                            "label": "True",
+                            "value": true
+                        }
+                    ]
+                },
+                {
+                    "component": "multiInput",
+                    "label": "Accepter Route Table IDs",
+                    "type": "text",
+                    "defaultValue": [],
+                    "id": "accepter_route_table_ids",
+                    "hint": "Comma separated value of Route table id, where the peering path will be added",
+                    "store": "accepter_route_table_ids",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "section": "VPC Security Group",
+            "sectionDec": "Configuring VPC Security Group",
+            "expand": true,
+            "type": "input_block",
+            "id": "VPC Security Group",
+            "fields": [
+                {
+                    "component": "toggle",
+                    "label": "Manage Default Security Group",
+                    "type": "button",
+                    "defaultValue": false,
+                    "id": "manage_default_security_group",
+                    "hint": "Should be true to adopt and manage default security group",
+                    "store": "manage_default_security_group",
+                    "required": false,
+                    "options": [
+                        {
+                            "label": "False",
+                            "value": false
+                        },
+                        {
+                            "label": "True",
+                            "value": true
+                        }
+                    ]
+                },
+                {
+                    "component": "rawInput",
+                    "label": "Default Security Group Ingress",
+                    "type": "text",
+                    "defaultValue": [],
+                    "id": "default_security_group_ingress",
+                    "hint": "List of maps of ingress rules to set on the default security group",
+                    "store": "default_security_group_ingress",
+                    "required": false
+                },
+                {
+                    "component": "rawInput",
+                    "label": "Default Security Group Egress",
+                    "type": "text",
+                    "defaultValue": [],
+                    "id": "default_security_group_egress",
+                    "hint": "List of maps of egress rules to set on the default security group",
+                    "store": "default_security_group_egress",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "section": "VPC Endpoints Security Group",
+            "sectionDec": "Configuring VPC Endpoints Security Group",
+            "expand": true,
+            "type": "input_block",
+            "id": "VPC Endpoints Security Group",
+            "fields": [
+                {
+                    "component": "multiInput",
+                    "label": "Security Group IDs",
+                    "type": "text",
+                    "defaultValue": [],
+                    "id": "security_group_ids",
+                    "hint": "Default security group IDs to associate with the VPC endpoints",
+                    "store": "security_group_ids",
+                    "required": false
+                },
+                {
+                    "component": "input",
+                    "label": "VPC Endpoints SG Name",
+                    "type": "text",
+                    "defaultValue": [],
+                    "id": "vpc_endpoints_sg_name",
+                    "hint": "Give a name for vpc end points security group",
+                    "store": "vpc_endpoints_sg_name",
+                    "required": false
+                },
+                {
+                    "component": "rawInput",
+                    "label": "Ingress Rules VPC Endpoints SG",
+                    "type": "text",
+                    "defaultValue": [],
+                    "id": "ingress_rules_vpc_endpoints_sg",
+                    "hint": "List of maps of ingress rules to set on the vpc endpoint security group",
+                    "store": "ingress_rules_vpc_endpoints_sg",
+                    "required": false
+                },
+                {
+                    "component": "rawInput",
+                    "label": "Egress Rules VPC Endpoints SG",
+                    "type": "text",
+                    "defaultValue": [],
+                    "id": "egress_rules_vpc_endpoints_sg",
+                    "hint": "List of maps of egress rules to set on the vpc endpoint security group",
+                    "store": "egress_rules_vpc_endpoints_sg",
+                    "required": false
+                }
+            ]
+        }
+    ]
+}

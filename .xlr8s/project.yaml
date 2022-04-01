@@ -5,6 +5,11 @@ envs:
 git:
   repoUrl: git@github.com:xi2424-npanjwani/xlr8s-demo.git
   revision: main
+modules:
+  terraform:
+  - module: git@github.com:xebiaww-apps/terraform-aws-xebia-vpc.git
+    ref:
+      tag: v0.10.0
 name: xlr8s-demo-9723
 vars:
   apps: null
