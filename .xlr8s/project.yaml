@@ -6,10 +6,26 @@ git:
   repoUrl: git@github.com:xi2424-npanjwani/xlr8s-demo.git
   revision: main
 modules:
+  k8stools:
+  - module: git@github.com:xebiaww-apps/helm-xebia-istio.git
+    ref:
+      branch: v11.4.2
+  - module: git@github.com:xebiaww-apps/helm-xebia-opa-gatekeeper.git
+    ref:
+      tag: v0.2.0
+  - module: git@github.com:xebiaww-apps/helm-xebia-kiali.git
+    ref:
+      tag: v0.3.0
+  - module: git@github.com:xebiaww-apps/helm-xebia-jaegar.git
+    ref:
+      tag: v0.1.0
   terraform:
   - module: git@github.com:xebiaww-apps/terraform-aws-xebia-vpc.git
     ref:
       tag: v0.10.0
+  - module: git@github.com:xebiaww-apps/terraform-aws-xebia-eks.git
+    ref:
+      tag: v0.11.0
 name: xlr8s-demo-9723
 vars:
   apps: null

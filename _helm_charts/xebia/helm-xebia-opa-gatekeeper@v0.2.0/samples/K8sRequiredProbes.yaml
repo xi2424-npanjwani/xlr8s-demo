@@ -1,0 +1,40 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRequiredProbes
+metadata:
+  name: must-have-probes
+  labels:
+    severity: high
+    projectId: xlr8s-demo
+    envId: dev
+spec:
+  enforcementAction: dryrun
+
+  match:
+    namespaces:
+      - default
+
+    excludedNamespaces:
+      - kube-system
+      - kube-public
+      - kube-node-lease
+      - gatekeeper-system
+
+    kinds:
+      - apiGroups: ["apps"]
+        kinds: ["Deployment", "StatefulSet"]
+      - apiGroups: [""]
+        kinds: ["Pod"]
+
+    labelSelector:
+      matchLabels:
+        app: nginx
+
+  parameters:
+    probeTypes:
+      - tcpSocket
+      - httpGet
+      - exec
+    probes:
+      - readinessProbe
+      - livenessProbe
+      - startupProbe

@@ -1,0 +1,51 @@
+ingress:
+  annotations:
+    alb.ingress.kubernetes.io/group.name: internal-tools
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/subnets: subnet-A,subnet-B
+    alb.ingress.kubernetes.io/tags: Project Name=Xebia
+    kubernetes.io/ingress.class: alb
+  enabled: true
+  namespace: istio-system
+  rules:
+  - host: jaeger.example.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: jaeger-jaeger-operator-jaeger-query
+            port:
+              number: 16686
+        path: /
+        pathType: Prefix
+jaeger-operator:
+  crd:
+    install: true
+  image:
+    repository: jaegertracing/jaeger-operator
+    tag: 1.28.0
+  jaeger:
+    create: true
+    namespace: istio-system
+    spec:
+      allInOne:
+        image: jaegertracing/all-in-one:1.13
+      ingress:
+        enabled: false
+      query:
+        serviceType: NodePort
+      storage:
+        options:
+          memory:
+            max-traces: 100000
+      strategy: allInOne
+  rbac:
+    clusterRole: true
+    create: true
+  resources:
+    limits:
+      cpu: 500m
+      memory: 500Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi

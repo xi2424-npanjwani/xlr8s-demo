@@ -1,0 +1,26 @@
+gateways:
+  istioIngressgateway:
+    type: LoadBalancer
+hub: gcr.io/istio-release
+ingressForIngressGateway:
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internal
+    kubernetes.io/ingress.class: alb
+  enabled: false
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: istio-ingressgateway
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+istio-operator:
+  hub: gcr.io/istio-release
+  tag: 1.11.4
+name: istio
+namespace: istio-system
+profile: demo
+tag: 1.11.4

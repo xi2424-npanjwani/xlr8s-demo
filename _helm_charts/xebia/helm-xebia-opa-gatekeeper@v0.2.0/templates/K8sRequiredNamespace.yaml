@@ -1,0 +1,22 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8srequirednamespace
+  annotations:
+    description: Requires all k8s resources to have namespace 
+    category: Misc
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sRequiredNamespace
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8srequirednamespace
+
+        violation[{"msg": msg}] {
+          not input.review.object.metadata.namespace
+          msg := sprintf("%v-%v must have namespace defined", [input.review.object.kind, input.review.object.metadata.name])
+        }
+

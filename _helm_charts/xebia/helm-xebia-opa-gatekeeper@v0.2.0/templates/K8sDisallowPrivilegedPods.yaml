@@ -1,0 +1,56 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8sdisallowprivilegedpods
+  annotations:
+    description: Container should not be privileged or allowed privilege escalation
+    category: Security
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sDisallowPrivilegedPods
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8sdisallowprivilegedpods
+
+        violation[{"msg": msg}] {
+          container := input_containers[_]       
+          not container.securityContext.privileged
+          msg := sprintf("Container %v in your %v %v does not have privileged defined", [container.name, input.review.object.kind, input.review.object.metadata.name])
+        }
+
+        violation[{"msg": msg}] {
+          container := input_containers[_]     
+          not container.securityContext.allowPrivilegeEscalation
+          msg := sprintf("Container %v in your %v %v does not have privileged escalation defined", [container.name, input.review.object.kind, input.review.object.metadata.name])
+        }
+
+        violation[{"msg": msg}] {
+          container := input_containers[_]       
+          container.securityContext.privileged
+          msg := sprintf("Container %v in your %v %v should not be privileged", [container.name, input.review.object.kind, input.review.object.metadata.name])
+        }
+
+        violation[{"msg": msg}] {
+          container := input_containers[_]     
+          container.securityContext.allowPrivilegeEscalation
+          msg := sprintf("Container %v in your %v %v should not be allowed privileged escalation", [container.name, input.review.object.kind, input.review.object.metadata.name])
+        }
+
+        input_containers[c] {
+          c := input.review.object.spec.containers[_]
+        }
+
+        input_containers[c] {
+          c := input.review.object.spec.template.spec.containers[_]
+        }
+
+        input_containers[c] {
+          c := input.review.object.spec.initContainers[_]
+        }
+
+        input_containers[c] {
+          c := input.review.object.spec.template.spec.initContainers[_]
+        }

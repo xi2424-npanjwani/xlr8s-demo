@@ -1,0 +1,16 @@
+apiVersion: v0.1.0
+assets: {}
+module:
+  module: git@github.com:xebiaww-apps/terraform-aws-xebia-eks.git
+  ref:
+    tag: v0.11.0
+name: my-eks
+overrides: {}
+refInfra: {}
+vars:
+  cluster_name: my-cluster
+  existing_vpc:
+    subnets: []
+    vpc_id: my-vpc
+  required_labels:
+    project: my-proj

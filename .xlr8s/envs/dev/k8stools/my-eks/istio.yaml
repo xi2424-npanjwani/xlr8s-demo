@@ -1,0 +1,37 @@
+apiVersion: v0.1.0
+assets: null
+module:
+  module: git@github.com:xebiaww-apps/helm-xebia-istio.git
+  ref:
+    branch: v11.4.2
+name: istio
+overrides: {}
+refInfra:
+  name: my-eks
+vars:
+  gateways:
+    istioIngressgateway:
+      type: LoadBalancer
+  hub: gcr.io/istio-release
+  ingressForIngressGateway:
+    annotations:
+      alb.ingress.kubernetes.io/scheme: internal
+      kubernetes.io/ingress.class: alb
+    enabled: false
+    rules:
+    - http:
+        paths:
+        - backend:
+            service:
+              name: istio-ingressgateway
+              port:
+                number: 80
+          path: /
+          pathType: Prefix
+  istio-operator:
+    hub: gcr.io/istio-release
+    tag: 1.11.4
+  name: istio
+  namespace: istio-system
+  profile: demo
+  tag: 1.11.4

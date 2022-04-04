@@ -1,0 +1,12 @@
+auditor:
+  image: khannaabhi/kube-fetcher:v0.0.2
+  interval: 5m
+  namespace: gatekeeper-system
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  serverAddr: xlr8s-server-address
