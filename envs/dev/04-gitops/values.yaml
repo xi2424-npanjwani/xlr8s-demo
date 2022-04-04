@@ -2,16 +2,3 @@ env: dev
 git:
   repoUrl: git@github.com:xi2424-npanjwani/xlr8s-demo.git
   revision: main
-tools:
-- chart: helm-xebia-istio@v11.4.2
-  name: istio
-  vendor: xebia
-- chart: helm-xebia-opa-gatekeeper@v0.2.0
-  name: opa-gatekeeper
-  vendor: xebia
-- chart: helm-xebia-kiali@v0.3.0
-  name: kiali
-  vendor: xebia
-- chart: helm-xebia-jaegar@v0.1.0
-  name: jaegar
-  vendor: xebia
