@@ -2,6 +2,8 @@ apiVersion: v0.1.0
 envs:
 - name: dev
   path: .xlr8s/envs/dev/env.yaml
+- name: test-auto
+  path: .xlr8s/envs/test-auto/env.yaml
 git:
   repoUrl: git@github.com:xi2424-npanjwani/xlr8s-demo.git
   revision: main
