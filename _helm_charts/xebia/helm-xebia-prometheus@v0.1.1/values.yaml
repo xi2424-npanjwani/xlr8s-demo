@@ -1,0 +1,82 @@
+prometheus:
+  serviceAccounts:
+    ## Disable alert manager roles
+    ##
+    server:
+      create: true
+      fullnameOverride: "prometheus-server"
+      name: "prometheus-sa"
+      # annotations:
+      #   eks.amazonaws.com/role-arn: arn:aws:iam::XXXXXXX:role/eks-amp-serviceaccount-role
+    alertmanager:
+      create: false
+
+    ## Disable pushgateway
+    ##
+    pushgateway:
+      create: false
+
+  server:
+    image:
+      repository: quay.io/prometheus/prometheus
+      tag: v2.34.0
+    ingress:
+      enabled: false
+      annotations: {}
+      extraLabels: {}
+      hosts: []
+      path: /
+    remoteWrite:
+      - url: "https://aps-workspaces.ap-southeast-1.amazonaws.com/workspaces/ws-859581e9-e541-xxxxxxxx/api/v1/remote_write"
+        sigv4:
+          region: "ap-southeast-1"
+          role_arn: "arn:aws:iam::XXXXXXXX:role/amp-access-eks-role"
+        queue_config:
+          max_samples_per_send: 1000
+          max_shards: 200
+          capacity: 2500
+    resources: {}
+      # limits:
+      #   cpu: 500m
+      #   memory: 512Mi
+      # requests:
+      #   cpu: 500m
+      #   memory: 512Mi
+
+    ## Use a statefulset instead of a deployment for resiliency
+    ##
+    statefulSet:
+      enabled: true
+
+    ## Store blocks locally for short time period only
+    ##
+    retention: 1h
+    
+  ## Disable alert manager
+  ##
+  alertmanager:
+    enabled: false
+
+  ## Disable pushgateway
+  ##
+  pushgateway:
+    enabled: false
+    fullnameOverride: "prometheus-pushgateway"
+
+  configmapReload:
+    prometheus:
+      image:
+        repository: jimmidyson/configmap-reload
+        tag: v0.5.0
+  nodeExporter:
+    fullnameOverride: "prometheus-nodeexporter"
+    image:
+      repository: quay.io/prometheus/node-exporter
+      tag: v1.3.0
+    resources: {}
+      # limits:
+      #   cpu: 200m
+      #   memory: 50Mi
+      # requests:
+      #   cpu: 100m
+      #   memory: 30Mi

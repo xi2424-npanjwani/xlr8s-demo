@@ -1,0 +1,170 @@
+fluent-bit:
+  fullnameOverride: fluent
+  image:
+    repository: fluent/fluent-bit
+    tag: "1.8.6"
+    # tag: "1.8.6-debug"
+  testFramework:
+    image:
+      repository: docker.io/busybox
+      pullPolicy: Always
+      tag: latest
+  podAnnotations:
+    fluentbit.io/exclude: "true"
+  serviceMonitor:
+    enabled: false
+    selector:
+      release: kube-prometheus-stack
+
+  serviceAccount:
+    create: false
+    name: opensearch-sa
+
+  dashboards:
+    enabled: false
+
+  resources:
+    limits:
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  tolerations:
+  - operator: "Exists"
+    effect: "NoSchedule"
+  
+  existingConfigMap: "fluentbit-config"
+
+  envFrom: []
+  # - secretRef:
+  #     name: fluent-bit-secret       
+
+fluentbitConfig:
+  configmapName: fluentbit-config
+  config:
+    fluent-bit.conf: |
+      [SERVICE]
+          Flush         1
+          Log_Level     info
+          Daemon        off
+          Parsers_File  parsers.conf
+          Parsers_File  custom_parsers.conf
+          HTTP_Server   On
+          HTTP_Listen   0.0.0.0
+          HTTP_Port     2020
+
+      [INPUT]
+          Name            systemd
+          Tag             host.*
+          Systemd_Filter  _SYSTEMD_UNIT=kubelet.service
+          Read_From_Tail  On
+
+      [INPUT]
+          Name               tail
+          Tag                mb2.*
+          Path               /var/log/containers/*_dev_*.log, /var/log/containers/*mwf*.log
+          Docker_Mode        On
+          Docker_Mode_Flush  5
+          Docker_Mode_Parser firstline
+          DB                 /var/log/flb_mb2.db
+          Parser             docker
+          Mem_Buf_Limit      50MB
+          Skip_Long_Lines    On
+          Refresh_Interval   10
+
+
+      [INPUT]
+          Name               tail
+          Tag                infra.*
+          Path               /var/log/containers/*.log
+          Exclude_Path       /var/log/containers/*_dev_*.log, /var/log/containers/*mwf*.log
+          Docker_Mode        On
+          Docker_Mode_Flush  5
+          Docker_Mode_Parser firstline
+          DB                 /var/log/flb_infra.db
+          Parser             docker
+          Mem_Buf_Limit      50MB
+          Skip_Long_Lines    On
+          Refresh_Interval   10
+
+
+      [FILTER]
+          Name                kubernetes
+          Match               mb2.*
+          Kube_URL            https://kubernetes.default.svc:443
+          Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
+          Kube_Tag_Prefix     mb2.var.log.containers.
+          Merge_Log           On
+          K8S-Logging.Parser  On
+          K8S-Logging.Exclude Off
+      [FILTER]
+          Name                kubernetes
+          Match               infra.*
+          Kube_URL            https://kubernetes.default.svc:443
+          Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
+          Kube_Tag_Prefix     infra.var.log.containers.
+          Merge_Log           On
+          K8S-Logging.Parser  On
+          K8S-Logging.Exclude Off
+
+      [OUTPUT]
+          Name es
+          Trace_Error On
+          #Trace_Output On
+          Match mb2.*
+          Host vpc-xxxxxxxxxx.ap-south-1.es.amazonaws.com
+          Replace_Dots On
+          Port 443
+          TLS On
+          AWS_Auth On
+          AWS_Region ap-south-1
+          Logstash_Format On
+          Logstash_Prefix mb2-app
+          Retry_Limit False
+
+      [OUTPUT]
+          Name es
+          Trace_Error On
+          #Trace_Output On
+          Match infra.*
+          Host vpc-xxxxxxxxxxx.ap-south-1.es.amazonaws.com
+          Replace_Dots On
+          Port 443
+          TLS On
+          AWS_Auth On
+          AWS_Region ap-south-1
+          Logstash_Format On
+          Logstash_Prefix infra
+          Retry_Limit False
+
+      [OUTPUT]
+          Name es
+          Match host.*
+          Host vpc-xxxxxxxxxxxxx.ap-south-1.es.amazonaws.com
+          Port 443
+          tls On
+          Logstash_Format On
+          Logstash_Prefix node
+          Retry_Limit False
+
+
+    custom_parsers.conf: |
+      [PARSER]
+          Name         firstline
+          Format       regex
+          Regex        (?<placeholder>\d+(?:-\d+){2}\s+\d+(?::\d+){2}\.\d+|\d{4}-\d{1,2}-\d{1,2}T\d{2}:\d{2}:\d{2}\.\d+Z\s\[|\{\smessage:\s)
+
+      [PARSER]
+          Name         javaparser
+          Format       regex
+          Regex        ^(?<time>\d+(?:-\d+){2}\s+\d+(?::\d+){2}\.\d+)\s*(?<level>\S+) (?<pid>\d+) --- \[(?<thread>[\s\S]*?)\] (?<class>\S+)\s*:\s*(?<message>[\s\S]*?)(?=\g<time>|\Z)
+          Time_Key     time
+          Time_Format  %Y-%m-%d %H:%M:%S.%L
+  inbuild:
+    namespaces:
+    - default
+    isRoleARNProvided: false
+    logStashPrefix: "xlr8s"

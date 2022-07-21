@@ -1,0 +1,37 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8sdisallowhostpath
+  annotations:
+    description: Disallow Hostpath in resources
+    category: Security
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sDisallowHostPath
+  
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8sdisallowhostpath
+
+        violation[{"msg": msg}] {
+            volume := input_hostpath_volumes[_]
+            msg := sprintf("HostPath volume is not allowed, %v: %v", [input.review.object.kind, input.review.object.metadata.name])
+        }
+
+        input_hostpath_volumes[v] {
+            v := input.review.object.spec.volumes[_]
+            has_field(v, "hostPath")
+        }
+
+        input_hostpath_volumes[v] {
+            v := input.review.object.spec.template.spec.volumes[_]
+            has_field(v, "hostPath")
+        }
+
+        # has_field returns whether an object has a field
+        has_field(object, field) = true {
+            object[field]
+        }

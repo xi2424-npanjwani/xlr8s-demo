@@ -1,0 +1,149 @@
+projectId: xlr8s-demo
+envId: dev
+
+K8sAllowedRepos: []
+
+K8sBlockNpLb:
+  - name: block-node-port
+    severity: high
+    enforcementAction: deny
+    params: {}
+    filters:
+      labels: {}
+      namespaces: []
+      excludedNamespaces: ["kube-system", "kube-public", "kube-node-lease", "gatekeeper-system", "istio-system"] 
+
+
+K8sCapsOnDeployment:
+  - name: deployment-must-have-caps
+    severity: high
+    enforcementAction: deny
+    params: 
+      minReplicas: 2
+    filters:
+      labels: {}
+      namespaces: []
+      excludedNamespaces: ["kube-system", "kube-public", "kube-node-lease", "gatekeeper-system", "istio-system"] 
+
+K8sCapsOnHPA:
+  - name: hpa-must-have-caps
+    severity: high
+    enforcementAction: deny
+    params: 
+      minReplicas: 2
+      maxReplicas: 50
+    filters:
+      labels: {}
+      namespaces: []
+      excludedNamespaces: ["kube-system", "kube-public", "kube-node-lease", "gatekeeper-system", "istio-system"] 
+
+
+K8sContainerResourceLimits:
+  - name: deployment-must-have-resource-limits
+    severity: high
+    enforcementAction: deny
+    params: 
+      requiredResourceTypes: ["limits", "requests"]
+      requiredResources: ["cpu", "memory"]
+      resourceLimits: 
+        limits:
+          cpu: "2"
+          memory: "4Gi"
+        requests:
+          cpu: "1"
+          memory: "2Gi"
+    filters:
+      labels: {}
+      namespaces: []
+      excludedNamespaces: ["kube-system", "kube-public", "kube-node-lease", "gatekeeper-system", "istio-system"] 
+
+K8sDisableHostNetworking:
+  - name: pods-should-not-have-host-network
+    severity: high
+    enforcementAction: deny
+    params: {}
+    filters:
+      labels: {}
+      namespaces: []
+      excludedNamespaces: [] 
+
+K8sDisallowedCapabilities:
+  - name: disallow-capabilities
+    severity: high
+    enforcementAction: deny
+    params: 
+      disAllowedAddCapabilies: ["NET_ADMIN", "ALL"]
+      disAllowedDropCapabilies: []
+      skipContainers: ["istio-init"]
+    filters:
+      labels: {}
+      namespaces: []
+      excludedNamespaces: ["kube-system", "kube-public", "kube-node-lease", "istio-system"]
+
+K8sDisallowedTags:
+  - name: container-image-must-not-have-following-tags
+    severity: high
+    enforcementAction: deny
+    params: 
+      tags: ["latest"]
+    filters:
+      labels: {}
+      namespaces: []
+      excludedNamespaces: [] 
+
+
+K8sDisallowHostPath:
+  - name: hostpath-volumns-not-allowed
+    severity: high
+    enforcementAction: deny
+    params: {}
+    filters:
+      labels: {}
+      namespaces: []
+      excludedNamespaces: []
+
+K8sDisallowPrivilegedPods:
+  - name: container-must-not-run-as-privileged
+    severity: high
+    enforcementAction: deny
+    params: {}
+    filters:
+      labels: {}
+      namespaces: []
+      excludedNamespaces: ["kube-system", "kube-public", "kube-node-lease", "gatekeeper-system", "istio-system"]
+
+K8sEnableAutoscaling:
+  - name: deployment-must-have-autoscaling
+    severity: high
+    enforcementAction: deny
+    params: {}
+    filters:
+      labels: {}
+      namespaces: []
+      excludedNamespaces: ["kube-system", "kube-public", "kube-node-lease", "gatekeeper-system", "istio-system"]
+
+K8sPodPriority: []
+
+K8sRequiredNamespace:
+  - name: resources-must-have-namespace
+    severity: high
+    enforcementAction: deny
+    params: {}
+    filters:
+      labels: {}
+      namespaces: []
+      excludedNamespaces: []
+
+K8sRequiredProbes: []
+
+K8sRunAsNonRoot:
+  - name: container-must-run-as-non-root
+    severity: high
+    enforcementAction: deny
+    params: 
+      skipContainers: ["istio-init"]
+    filters:
+      labels: {}
+      namespaces: []
+      excludedNamespaces: ["kube-system", "kube-public", "kube-node-lease"]
+

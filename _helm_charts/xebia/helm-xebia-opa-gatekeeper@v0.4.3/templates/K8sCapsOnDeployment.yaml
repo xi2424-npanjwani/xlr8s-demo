@@ -1,0 +1,37 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8scapsondeployment
+  annotations:
+    description: Requires Deployment to have min replicas 
+    category: QoS
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sCapsOnDeployment
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            minReplicas:
+              type: integer
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8scapsondeployment
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "Deployment"
+          minReplicas := input.parameters.minReplicas
+          not input.review.object.spec.replicas
+          msg := sprintf("%v %v has no replicas specified, min required = %v", [input.review.object.kind, input.review.object.metadata.name, minReplicas])
+        }
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "Deployment"
+          minReplicas := input.parameters.minReplicas
+          minReplicas > input.review.object.spec.replicas
+          msg := sprintf("%v %v has less replicas specified, replicas-provided = %v, min required = %v", [input.review.object.kind, input.review.object.metadata.name, input.review.object.spec.replicas, minReplicas])
+        }
+        

@@ -1,0 +1,28 @@
+{{ if .Values.denyAuthorizationPolicy }}
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: deny-all-auth-policies
+  namespace: "istio-system"
+spec: {}
+{{ end }}
+
+
+{{ range $policy := .Values.authorizationPolicy }}
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+ name: {{ $policy.name }}
+ namespace: {{ $policy.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ $policy.name }}
+  action: {{ $policy.action }}
+{{- if $policy.rules }}
+  rules:
+{{ toYaml $policy.rules | indent 4 }}
+{{- end }}
+---      
+{{ end }}

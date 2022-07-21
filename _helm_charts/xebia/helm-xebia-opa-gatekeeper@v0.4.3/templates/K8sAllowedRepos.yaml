@@ -1,0 +1,72 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8sallowedrepos
+  annotations:
+    description: Requires container images to begin with a repo string from a specified list.
+    category: Security
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sAllowedRepos
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            repos:
+              type: array
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8sallowedrepos
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "Deployment"
+          container := input.review.object.spec.template.spec.containers[_]
+          satisfied := [good | repo = input.parameters.repos[_] ; good = startswith(container.image, repo)]
+          not any(satisfied)
+          msg := sprintf("container %v in %v %v has an invalid image repo %v, allowed repos are %v", [container.name, input.review.object.kind, input.review.object.metadata.name, container.image, input.parameters.repos])
+        }
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "Deployment"
+          container := input.review.object.spec.template.spec.initContainers[_]
+          satisfied := [good | repo = input.parameters.repos[_] ; good = startswith(container.image, repo)]
+          not any(satisfied)
+          msg := sprintf("container %v in %v %v has an invalid image repo %v, allowed repos are %v", [container.name, input.review.object.kind, input.review.object.metadata.name, container.image, input.parameters.repos])
+        }
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "StatefulSet"
+          container := input.review.object.spec.template.spec.containers[_]
+          satisfied := [good | repo = input.parameters.repos[_] ; good = startswith(container.image, repo)]
+          not any(satisfied)
+          msg := sprintf("container %v in %v %v has an invalid image repo %v, allowed repos are %v", [container.name, input.review.object.kind, input.review.object.metadata.name, container.image, input.parameters.repos])
+        }
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "StatefulSet"
+          container := input.review.object.spec.template.spec.initContainers[_]
+          satisfied := [good | repo = input.parameters.repos[_] ; good = startswith(container.image, repo)]
+          not any(satisfied)
+          msg := sprintf("container %v in %v %v has an invalid image repo %v, allowed repos are %v", [container.name, input.review.object.kind, input.review.object.metadata.name, container.image, input.parameters.repos])
+        }
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "Pod"
+          container := input.review.object.spec.containers[_]
+          satisfied := [good | repo = input.parameters.repos[_] ; good = startswith(container.image, repo)]
+          not any(satisfied)
+          msg := sprintf("container %v in %v %v has an invalid image repo %v, allowed repos are %v", [container.name, input.review.object.kind, input.review.object.metadata.name, container.image, input.parameters.repos])
+        }
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "Pod"
+          container := input.review.object.spec.initContainers[_]
+          satisfied := [good | repo = input.parameters.repos[_] ; good = startswith(container.image, repo)]
+          not any(satisfied)
+          msg := sprintf("container %v in %v %v has an invalid image repo %v, allowed repos are %v", [container.name, input.review.object.kind, input.review.object.metadata.name, container.image, input.parameters.repos])
+        }

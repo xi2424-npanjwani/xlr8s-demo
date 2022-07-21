@@ -1,0 +1,25 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sEnableAutoscaling
+metadata:
+  name: deployment-must-have-autoscaling
+  labels:
+    severity: high
+    projectId: xlr8s-demo
+    envId: dev
+spec:
+  enforcementAction: dryrun
+
+  match:
+    excludedNamespaces:
+      - kube-system
+      - kube-public
+      - kube-node-lease
+      - gatekeeper-system
+
+    kinds:
+      - apiGroups: ["apps"]
+        kinds: ["Deployment"]
+
+    labelSelector:
+      matchLabels:
+        app: nginx

@@ -1,0 +1,8 @@
+apiVersion: v1
+name: helm-xebia-kiali-operator
+description: A Helm chart for kiali Operator
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+
+

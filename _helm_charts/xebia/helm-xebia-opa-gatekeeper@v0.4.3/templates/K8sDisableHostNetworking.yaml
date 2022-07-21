@@ -1,0 +1,36 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8sdisablehostnetworking
+  annotations:
+    description: Pods should not have host networking
+    category: Security
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sDisableHostNetworking
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8sdisablehostnetworking
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "Deployment"
+          input.review.object.spec.template.spec.hostNetwork == true
+          msg := sprintf("%v %v should not allow host networking", [input.review.object.kind, input.review.object.metadata.name])
+        }
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "StatefulSet"
+          input.review.object.spec.template.spec.hostNetwork == true
+          msg := sprintf("%v %v should not allow host networking", [input.review.object.kind, input.review.object.metadata.name])
+        }
+        
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "Pod"
+          input.review.object.spec.hostNetwork == true
+          msg := sprintf("%v %v should not allow host networking", [input.review.object.kind, input.review.object.metadata.name])
+        }
+

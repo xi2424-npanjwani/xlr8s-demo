@@ -1,0 +1,73 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8sdisallowedcapabilities
+  annotations:
+    description: Container should have certain capabilities
+    category: Security
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sDisallowedCapabilities
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            disAllowedAddCapabilies:
+              type: array
+              items:
+                type: string
+            disAllowedDropCapabilies:
+              type: array
+              items:
+                type: string
+            skipContainers:
+              type: array
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8sdisallowedcapabilities
+        
+        violation[{"msg": msg}] {
+          container := input_containers[_]
+          capability := container.securityContext.capabilities.add[_]
+          satisfied := [good | cap = input.parameters.disAllowedAddCapabilies[_] ; good = lower(capability) == lower(cap)]
+          any(satisfied)
+          msg := sprintf("Container %v in your %v %v have disallowed capability - %v", [container.name, input.review.object.kind, input.review.object.metadata.name, capability])
+        }
+
+        violation[{"msg": msg}] {
+          container := input_containers[_]
+          capability := container.securityContext.capabilities.drop[_]
+          satisfied := [good | cap = input.parameters.disAllowedDropCapabilies[_] ; good = lower(capability) == lower(cap)]
+          any(satisfied)
+          msg := sprintf("Container %v in your %v %v have disallowed capability - %v", [container.name, input.review.object.kind, input.review.object.metadata.name, capability])
+        }
+
+        input_containers[c] {
+          c := input.review.object.spec.initContainers[_]
+          check_for_allowedContainers(c)   
+        }
+
+        input_containers[c] {
+          c := input.review.object.spec.template.spec.initContainers[_]
+          check_for_allowedContainers(c)   
+        }
+
+        input_containers[c] {
+          c := input.review.object.spec.containers[_]
+          check_for_allowedContainers(c)   
+        }
+
+        input_containers[c] {
+          c := input.review.object.spec.template.spec.containers[_]
+          check_for_allowedContainers(c)   
+        }
+
+        check_for_allowedContainers(ctr) = true {
+          satisfied := [good | repo = input.parameters.skipContainers[_] ; good = ctr.name == repo]
+          not any(satisfied)
+        }

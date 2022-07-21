@@ -1,0 +1,82 @@
+kiali-operator:
+ image:
+    repo: quay.io/kiali/kiali-operator
+    tag: "v1.43.0"
+ replicaCount: 1
+ watchNamespace: ""
+ clusterRoleCreator: true
+ onlyViewOnlyMode: false
+ env:
+  - name: "ALLOW_AD_HOC_KIALI_IMAGE"
+    value: "true" 
+ metrics:
+  enabled: true
+ resources:
+    limits:
+      memory: "1024Mi"
+      cpu: "1000m"
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+ cr:
+  create: true
+  name: kiali
+  namespace: "istio-system"
+  spec:
+   version: default
+   auth:
+      strategy: token
+   api: 
+     namespaces:
+        exclude:
+        - "istio-operator"
+        - "kube-.*"
+        - "kiali-operator"
+        - "monitoring"
+   #external_services:
+   #    prometheus:
+   #      url: http://monitoring-stack-kube-prom-prometheus.monitoring:9090
+   deployment:
+      image_name: quay.io/kiali/kiali
+      image_version: v1.43.0
+      namespace: "istio-system"
+      instance_name: "kiali"
+      view_only_mode: false
+      accessible_namespaces:
+      - '**'
+      replicas: 1
+      service_type: NodePort
+      resources:
+        requests:
+          cpu: "10m"
+          memory: "64Mi"
+        limits:
+          memory: "1Gi"
+      ingress:
+        enabled: true
+        override_yaml:
+           metadata:
+              annotations:
+                #alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig":{"Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+                #alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:account_id:certificate/certficate_arn
+                alb.ingress.kubernetes.io/group.name: internal-tools
+                #alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+                alb.ingress.kubernetes.io/scheme: internal
+                alb.ingress.kubernetes.io/subnets: subnet-A,subnet-B
+                alb.ingress.kubernetes.io/tags: Project Name=Xebia
+                kubernetes.io/ingress.class: alb
+           spec:
+             rules:
+              - host: kiali.example.com 
+                http:
+                  paths:
+                  - backend:
+                     service:
+                       name: kiali
+                       port: 
+                         number: 20001
+                    path: /kiali
+                    pathType: Prefix
+
+preDelete:
+  images: bitnami/kubectl:1.22.10-debian-11-r1

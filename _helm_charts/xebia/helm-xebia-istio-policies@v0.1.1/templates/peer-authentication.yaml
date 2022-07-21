@@ -1,0 +1,10 @@
+{{ if .Values.forcemTLS }}
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: enable-force-mtls
+  namespace: "istio-system"
+spec:
+  mtls:
+    mode: STRICT
+{{ end }}
