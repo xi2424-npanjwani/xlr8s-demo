@@ -40,3 +40,4 @@ fluentbitConfig:
     logStashPrefix: xlr8s
     namespaces:
     - dev
+    - demo

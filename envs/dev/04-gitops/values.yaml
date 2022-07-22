@@ -1,7 +1,7 @@
 env: dev
 git:
   repoUrl: git@github.com:xi2424-npanjwani/xlr8s-demo.git
-  revision: xlr8s-demo
+  revision: eks-dev-test-123-8062
 tools:
 - chart: helm-xebia-opa-gatekeeper@v0.4.3
   name: 01-opa-gatekeeper

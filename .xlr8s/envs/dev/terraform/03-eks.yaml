@@ -20,6 +20,8 @@ vars:
     name: gatekeeper-system
   - enable_istio: true
     name: dev
+  - enable_istio: true
+    name: demo
   assume_role_arn: arn:aws:iam::474532148129:role/Xlr8sAccountDetailsLister
   aws_lb_controller_ingress_class: alb
   aws_lb_controller_resources_limits_cpu: 100m
