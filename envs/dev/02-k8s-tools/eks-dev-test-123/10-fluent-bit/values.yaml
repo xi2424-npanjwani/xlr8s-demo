@@ -39,4 +39,4 @@ fluentbitConfig:
     isRoleARNProvided: false
     logStashPrefix: xlr8s
     namespaces:
-    - default
+    - dev
