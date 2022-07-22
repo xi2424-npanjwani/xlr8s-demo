@@ -1,0 +1,41 @@
+prometheus:
+  alertmanager:
+    enabled: false
+  configmapReload:
+    prometheus:
+      image:
+        repository: jimmidyson/configmap-reload
+        tag: v0.5.0
+  nodeExporter:
+    fullnameOverride: prometheus-nodeexporter
+    image:
+      repository: quay.io/prometheus/node-exporter
+      tag: v1.3.0
+    resources: {}
+  pushgateway:
+    enabled: false
+    fullnameOverride: prometheus-pushgateway
+  server:
+    fullnameOverride: prometheus-server
+    image:
+      repository: quay.io/prometheus/prometheus
+      tag: v2.34.0
+    ingress:
+      annotations: {}
+      enabled: false
+      extraLabels: {}
+      hosts: []
+      path: /
+    remoteWrite: []
+    resources: {}
+    retention: 1h
+    statefulSet:
+      enabled: true
+  serviceAccounts:
+    alertmanager:
+      create: false
+    pushgateway:
+      create: false
+    server:
+      create: true
+      name: prometheus-amp-sa
