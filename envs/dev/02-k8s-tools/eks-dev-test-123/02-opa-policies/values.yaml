@@ -1,0 +1,198 @@
+K8sAllowedRepos: []
+K8sBlockNpLb:
+- enforcementAction: deny
+  filters:
+    excludedNamespaces:
+    - kube-system
+    - kube-public
+    - kube-node-lease
+    - gatekeeper-system
+    - istio-system
+    - monitoring
+    - logging
+    labels: {}
+    namespaces: []
+  name: block-node-port
+  params: {}
+  severity: high
+K8sCapsOnDeployment: []
+K8sCapsOnHPA:
+- enforcementAction: deny
+  filters:
+    excludedNamespaces:
+    - kube-system
+    - kube-public
+    - kube-node-lease
+    - gatekeeper-system
+    - istio-system
+    - monitoring
+    - logging
+    labels: {}
+    namespaces: []
+  name: hpa-must-have-caps
+  params:
+    maxReplicas: 50
+    minReplicas: 2
+  severity: high
+K8sContainerResourceLimits:
+- enforcementAction: deny
+  filters:
+    excludedNamespaces:
+    - kube-system
+    - kube-public
+    - kube-node-lease
+    - gatekeeper-system
+    - istio-system
+    - monitoring
+    - logging
+    labels: {}
+    namespaces: []
+  name: deployment-must-have-resource-limits
+  params:
+    requiredResourceTypes:
+    - limits
+    - requests
+    requiredResources:
+    - cpu
+    - memory
+    resourceLimits:
+      limits:
+        cpu: "2"
+        memory: 4Gi
+      requests:
+        cpu: "1"
+        memory: 2Gi
+  severity: high
+K8sDisableHostNetworking:
+- enforcementAction: deny
+  filters:
+    excludedNamespaces:
+    - kube-system
+    - kube-public
+    - kube-node-lease
+    - gatekeeper-system
+    - istio-system
+    - monitoring
+    - logging
+    labels: {}
+    namespaces: []
+  name: pods-should-not-have-host-network
+  params: {}
+  severity: high
+K8sDisallowHostPath:
+- enforcementAction: deny
+  filters:
+    excludedNamespaces:
+    - kube-system
+    - kube-public
+    - kube-node-lease
+    - gatekeeper-system
+    - istio-system
+    - monitoring
+    - logging
+    labels: {}
+    namespaces: []
+  name: hostpath-volumns-not-allowed
+  params: {}
+  severity: high
+K8sDisallowPrivilegedPods:
+- enforcementAction: deny
+  filters:
+    excludedNamespaces:
+    - kube-system
+    - kube-public
+    - kube-node-lease
+    - gatekeeper-system
+    - istio-system
+    - monitoring
+    - logging
+    labels: {}
+    namespaces: []
+  name: container-must-not-run-as-privileged
+  params: {}
+  severity: high
+K8sDisallowedCapabilities:
+- enforcementAction: deny
+  filters:
+    excludedNamespaces:
+    - kube-system
+    - kube-public
+    - kube-node-lease
+    - istio-system
+    - gatekeeper-system
+    - monitoring
+    - logging
+    labels: {}
+    namespaces: []
+  name: disallow-capabilities
+  params:
+    disAllowedAddCapabilies:
+    - NET_ADMIN
+    - ALL
+    disAllowedDropCapabilies: []
+    skipContainers:
+    - istio-init
+  severity: high
+K8sDisallowedTags:
+- enforcementAction: deny
+  filters:
+    excludedNamespaces: []
+    labels: {}
+    namespaces: []
+  name: container-image-must-not-have-following-tags
+  params:
+    tags:
+    - latest
+  severity: high
+K8sEnableAutoscaling:
+- enforcementAction: warn
+  filters:
+    excludedNamespaces:
+    - kube-system
+    - kube-public
+    - kube-node-lease
+    - gatekeeper-system
+    - istio-system
+    - monitoring
+    - logging
+    labels: {}
+    namespaces: []
+  name: deployment-must-have-autoscaling
+  params: {}
+  severity: high
+K8sPodPriority: []
+K8sRequiredNamespace:
+- enforcementAction: deny
+  filters:
+    excludedNamespaces:
+    - kube-system
+    - kube-public
+    - kube-node-lease
+    - gatekeeper-system
+    - istio-system
+    - monitoring
+    - logging
+    labels: {}
+    namespaces: []
+  name: resources-must-have-namespace
+  params: {}
+  severity: high
+K8sRequiredProbes: []
+K8sRunAsNonRoot:
+- enforcementAction: deny
+  filters:
+    excludedNamespaces:
+    - kube-system
+    - kube-public
+    - kube-node-lease
+    - gatekeeper-system
+    - istio-system
+    - monitoring
+    - logging
+    labels: {}
+    namespaces: []
+  name: container-must-run-as-non-root
+  params:
+    skipContainers:
+    - istio-init
+  severity: high

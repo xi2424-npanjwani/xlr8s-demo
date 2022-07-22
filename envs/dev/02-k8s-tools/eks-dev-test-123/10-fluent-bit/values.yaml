@@ -1,0 +1,42 @@
+fluent-bit:
+  dashboards:
+    enabled: false
+  envFrom:
+  - secretRef:
+      name: ""
+  existingConfigMap: fluentbit-config
+  fullnameOverride: fluent
+  image:
+    repository: fluent/fluent-bit
+    tag: 1.8.6
+  podAnnotations:
+    fluentbit.io/exclude: "true"
+  resources:
+    limits:
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  serviceAccount:
+    create: true
+    name: opensearch-sa
+  serviceMonitor:
+    enabled: false
+    selector:
+      release: kube-prometheus-stack
+  testFramework:
+    image:
+      pullPolicy: Always
+      repository: docker.io/busybox
+      tag: latest
+  tolerations:
+  - effect: NoSchedule
+    operator: Exists
+fluentbitConfig:
+  config: null
+  configmapName: fluentbit-config
+  inbuild:
+    isRoleARNProvided: false
+    logStashPrefix: xlr8s
+    namespaces:
+    - default

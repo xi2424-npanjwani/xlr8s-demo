@@ -7,7 +7,7 @@ module:
 name: 03-eks
 overrides: {}
 refInfra:
-  name: eks-dev-test-cluster
+  name: eks-dev-test-123
 vars:
   add_namespaces:
   - enable_istio: false
@@ -40,8 +40,8 @@ vars:
   cluster_endpoint_private_access: true
   cluster_endpoint_private_access_sg: []
   cluster_endpoint_public_access: true
-  cluster_name: eks-dev-test-cluster
-  cluster_version: "1.20"
+  cluster_name: eks-dev-test-123
+  cluster_version: "1.21"
   create_opensearch_sa: false
   create_private_registry_secret: false
   create_prometheus_sa: false
