@@ -14,7 +14,7 @@ vars:
       enabled: false
     envFrom:
     - secretRef:
-        name: demo-cluster
+        name: demo-cluster-basic
     existingConfigMap: fluentbit-config
     fullnameOverride: fluent
     image:
@@ -29,7 +29,7 @@ vars:
         cpu: 100m
         memory: 128Mi
     serviceAccount:
-      create: false
+      create: true
       name: opensearch-sa
     serviceMonitor:
       enabled: false
@@ -47,7 +47,7 @@ vars:
     config: null
     configmapName: fluentbit-config
     inbuild:
-      isRoleARNProvided: true
+      isRoleARNProvided: false
       logStashPrefix: xlr8s
       namespaces:
       - dev
