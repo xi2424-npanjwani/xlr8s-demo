@@ -1,0 +1,19 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  components:
+    ingressGateways:
+    - enabled: true
+      k8s:
+        service:
+          type: NodePort
+      name: istio-ingressgateway
+  hub: docker.io/istio
+  meshConfig:
+    defaultConfig:
+      tracing:
+        sampling: 100
+        zipkin:
+          address: zipkin.istio-system:9411
+    enableTracing: true
+  profile: default

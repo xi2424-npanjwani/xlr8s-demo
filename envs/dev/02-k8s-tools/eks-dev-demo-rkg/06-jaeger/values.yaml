@@ -1,0 +1,43 @@
+deployment:
+  memoryMaxTrace: 50000
+  resources:
+    limits:
+      cpu: 200m
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+image:
+  repository: docker.io/jaegertracing/all-in-one
+  tag: 1.29
+ingress:
+  annotations:
+    alb.ingress.kubernetes.io/group.name: internal-tools
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/healthcheck-port: jaeger-health-http
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/subnets: subnet-0ae19f3b2cd361adf,subnet-0311c71b729735a54,subnet-01e18af4db3d96483
+    alb.ingress.kubernetes.io/tags: Project Name=Xebia
+    kubernetes.io/ingress.class: alb
+  enabled: true
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: tracing
+            port:
+              number: 80
+        path: /jaeger
+        pathType: Prefix
+namespace: istio-system
+service:
+  collector:
+    type: ClusterIP
+  tracing:
+    type: NodePort
+  zipkin:
+    type: ClusterIP
+volume:
+  storage: 2Gi

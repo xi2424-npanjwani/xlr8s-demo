@@ -1,0 +1,47 @@
+apiVersion: v0.1.0
+assets: null
+module:
+  module: git@github.com:xebiaww-apps/helm-xebia-opa-gatekeeper.git
+  ref:
+    tag: v0.4.3
+name: 01-opa-gatekeeper
+overrides: {}
+refInfra:
+  name: eks-dev-demo-rkg
+vars:
+  auditor:
+    enabled: false
+    image: khannaabhi/kube-fetcher:v0.0.2
+    interval: 5m
+    namespace: gatekeeper-system
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+    serverAddr: xlr8s-server-address
+  gatekeeper:
+    image:
+      crdRepository: openpolicyagent/gatekeeper-crds
+      pullPolicy: IfNotPresent
+      pullSecrets: []
+      release: v3.8.1
+      repository: openpolicyagent/gatekeeper
+    postInstall:
+      labelNamespace:
+        enabled: true
+        image:
+          pullPolicy: IfNotPresent
+          pullSecrets: []
+          repository: openpolicyagent/gatekeeper-crds
+          tag: v3.8.1
+    preUninstall:
+      deleteWebhookConfigurations:
+        enabled: false
+        image:
+          pullPolicy: IfNotPresent
+          pullSecrets: []
+          repository: openpolicyagent/gatekeeper-crds
+          tag: v3.8.1
