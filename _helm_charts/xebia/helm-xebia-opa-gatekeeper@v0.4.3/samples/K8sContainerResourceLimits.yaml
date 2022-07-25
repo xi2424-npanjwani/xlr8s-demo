@@ -1,0 +1,45 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sContainerResourceLimits
+metadata:
+  name: deployment-must-have-resource-limits
+  labels:
+    severity: high
+    projectId: xlr8s-demo
+    envId: dev
+spec:
+  enforcementAction: dryrun
+
+  match:
+    namespaces:
+      - default
+
+    excludedNamespaces:
+      - kube-system
+      - kube-public
+      - kube-node-lease
+      - gatekeeper-system
+
+    kinds:
+      - apiGroups: ["apps"]
+        kinds: ["Deployment", "StatefulSet"]
+      - apiGroups: [""]
+        kinds: ["Pod"]
+
+    labelSelector:
+      matchLabels:
+        app: nginx
+
+  parameters:
+    limitTypes:
+      - cpu
+      - memory
+    resourceLimits:
+      limits:
+        cpu: 100m
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 1Gi
+    resourceTypes:
+      - limits
+      - requests

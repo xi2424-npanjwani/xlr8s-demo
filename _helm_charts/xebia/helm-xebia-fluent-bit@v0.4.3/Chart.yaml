@@ -1,0 +1,6 @@
+apiVersion: v2
+name: helm-xebia-fluent-bit
+description: A Helm chart to setup fluent-bit
+type: application
+version: 0.1.0
+appVersion: "1.16.0"

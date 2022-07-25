@@ -1,0 +1,95 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8srunasnonroot
+  annotations:
+    description: Container should run as non root
+    category: Security
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sRunAsNonRoot
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            skipContainers:
+              type: array
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8srunasnonroot
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "Deployment"
+          check_for_run_as_root(input.review.object.spec.template.spec)
+          container := input.review.object.spec.template.spec.initContainers[_]  
+          check_for_allowedContainers(container)     
+          check_for_run_as_root(container)
+          msg := sprintf("Container %v in your %v %v should run as non root", [container.name, input.review.object.kind, input.review.object.metadata.name])
+        }
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "Deployment"
+          check_for_run_as_root(input.review.object.spec.template.spec)
+          container := input.review.object.spec.template.spec.containers[_]       
+          check_for_allowedContainers(container)   
+          check_for_run_as_root(container)
+          msg := sprintf("Container %v in your %v %v should run as non root", [container.name, input.review.object.kind, input.review.object.metadata.name])
+        }
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "StatefulSet"
+          check_for_run_as_root(input.review.object.spec.template.spec)
+          container := input.review.object.spec.template.spec.initContainers[_]
+          check_for_allowedContainers(container)
+          check_for_run_as_root(container)
+          msg := sprintf("Container %v in your %v %v should run as non root", [container.name, input.review.object.kind, input.review.object.metadata.name])
+        }
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "StatefulSet"
+          check_for_run_as_root(input.review.object.spec.template.spec)
+          container := input.review.object.spec.template.spec.containers[_]
+          check_for_allowedContainers(container)   
+          check_for_run_as_root(container)
+          msg := sprintf("Container %v in your %v %v should run as non root", [container.name, input.review.object.kind, input.review.object.metadata.name])
+        }
+        
+        violation[{"msg": msg}] {
+          input.review.object.kind == "Pod"
+          check_for_run_as_root(input.review.object.spec)
+          container := input.review.object.spec.initContainers[_]
+          check_for_allowedContainers(container)
+          check_for_run_as_root(container)
+          msg := sprintf("Container %v in your %v %v should run as non root", [container.name, input.review.object.kind, input.review.object.metadata.name])
+        }
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "Pod"
+          check_for_run_as_root(input.review.object.spec)
+          container := input.review.object.spec.containers[_]
+          check_for_allowedContainers(container)   
+          check_for_run_as_root(container)
+          msg := sprintf("Container %v in your %v %v should run as non root", [container.name, input.review.object.kind, input.review.object.metadata.name])
+        }
+
+        check_for_run_as_root(ctr) = true {
+          not ctr.securityContext.runAsNonRoot
+        }
+
+        check_for_run_as_root(ctr) = true {
+          not ctr.securityContext
+        }
+
+        check_for_run_as_root(ctr) = true {
+          ctr.securityContext.runAsNonRoot == false
+        }
+
+        check_for_allowedContainers(ctr) = true {
+          satisfied := [good | repo = input.parameters.skipContainers[_] ; good = ctr.name == repo]
+          not any(satisfied)
+        }

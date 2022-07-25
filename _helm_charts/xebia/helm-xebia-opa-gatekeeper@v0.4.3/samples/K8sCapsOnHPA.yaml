@@ -1,0 +1,32 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sCapsOnHPA
+metadata:
+  name: hpa-must-have-caps
+  labels:
+    severity: high
+    projectId: xlr8s-demo
+    envId: dev
+spec:
+  enforcementAction: dryrun
+
+  match:
+    namespaces:
+      - default
+
+    excludedNamespaces:
+      - kube-system
+      - kube-public
+      - kube-node-lease
+      - gatekeeper-system
+
+    kinds:
+      - apiGroups: ["autoscaling"]
+        kinds: ["HorizontalPodAutoscaler"]
+
+    labelSelector:
+      matchLabels:
+        app: nginx
+
+  parameters:
+    maxReplicas: 10
+    minReplicas: 3

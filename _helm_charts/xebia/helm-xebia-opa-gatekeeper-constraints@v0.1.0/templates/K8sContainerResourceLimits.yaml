@@ -1,0 +1,43 @@
+{{ $v := .Values.K8sContainerResourceLimits }}
+{{ $project := .Values.projectId }}
+{{ $env := .Values.envId }}
+
+{{range $j, $constraint := $v }}
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sContainerResourceLimits
+metadata:
+  name: {{ $project }}---{{ $env }}---{{$constraint.name}}
+  labels:
+    severity: {{$constraint.severity}}
+    projectId: {{ $project }}
+    envId: {{ $env }}
+spec:
+  enforcementAction: {{$constraint.enforcementAction}}
+  
+  match:
+
+    {{if $constraint.filters.namespaces  }}  
+    namespaces: {{- toYaml $constraint.filters.namespaces | nindent 6 }}
+    {{end}}
+    
+    {{if $constraint.filters.excludedNamespaces  }}  
+    excludedNamespaces: {{- toYaml $constraint.filters.excludedNamespaces | nindent 6 }}
+    {{end}}
+
+    kinds:
+      - apiGroups: ["apps"]
+        kinds: ["Deployment", "StatefulSet"]
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    
+    labelSelector:
+      matchLabels: 
+        {{- toYaml $constraint.filters.labels  | nindent 8 }}
+      
+
+{{if $constraint.params }}
+  parameters: {{- toYaml $constraint.params | nindent 4 }}
+{{end}}  
+
+---      
+{{ end }}

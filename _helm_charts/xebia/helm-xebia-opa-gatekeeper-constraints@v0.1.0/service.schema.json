@@ -1,0 +1,137 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "K8sAllowedRepos": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/constraints"
+            }
+        },
+        "K8sBlockNpLb": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/constraints"
+            }
+        },
+        "K8sCapsOnDeployment": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/constraints"
+            }
+        },
+        "K8sCapsOnHPA": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/constraints"
+            }
+        },
+        "K8sContainerResourceLimits": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/constraints"
+            }
+        },
+        "K8sDisableHostNetworking": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/constraints"
+            }
+        },
+        "K8sDisallowedTags": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/constraints"
+            }
+        },
+        "K8sDisallowHostPath": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/constraints"
+            }
+        },
+        "K8sDisallowedCapabilities": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/constraints"
+            }
+        },
+        "K8sDisallowPrivilegedPods": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/constraints"
+            }
+        },
+        "K8sEnableAutoscaling": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/constraints"
+            }
+        },
+        "K8sPodPriority": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/constraints"
+            }
+        },
+        "K8sRequiredNamespace": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/constraints"
+            }
+        },
+        "K8sRequiredProbes": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/constraints"
+            }
+        },
+        "K8sRunAsNonRoot": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/constraints"
+            }
+        }
+    },
+    "$defs": {
+        "constraints": {
+            "type": "object",
+            "properties": {
+                "enforcementAction": {
+                    "type": "string",
+                    "enum": ["deny", "warn", "dryrun"]
+                },
+                "filters": {
+                    "type": "object",
+                    "properties": {
+                        "excludedNamespaces": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "labels": {
+                            "type": "object"
+                        },
+                        "namespaces": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "severity": {
+                    "type": "string",
+                    "enum": ["high", "medium", "low"]
+                },
+                "name": {
+                    "type": "string"
+                },
+                "params": {
+                    "type": "object"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,37 @@
+auditor:
+  enabled: false
+  namespace: "gatekeeper-system"
+  serverAddr: "xlr8s-server-address"              # xlr8s server address
+  interval: "5m"                                 # audit-interval
+  image: "khannaabhi/kube-fetcher:v0.0.2"         # auditor-image
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+
+gatekeeper:
+  postInstall:
+    labelNamespace:
+      enabled: true
+      image:
+        repository: openpolicyagent/gatekeeper-crds
+        tag: v3.8.1
+        pullPolicy: IfNotPresent
+        pullSecrets: []
+  preUninstall:
+    deleteWebhookConfigurations:
+      enabled: false
+      image:
+        repository: openpolicyagent/gatekeeper-crds
+        tag: v3.8.1
+        pullPolicy: IfNotPresent
+        pullSecrets: []
+  image:
+    repository: openpolicyagent/gatekeeper
+    crdRepository: openpolicyagent/gatekeeper-crds
+    release: v3.8.1
+    pullPolicy: IfNotPresent
+    pullSecrets: []

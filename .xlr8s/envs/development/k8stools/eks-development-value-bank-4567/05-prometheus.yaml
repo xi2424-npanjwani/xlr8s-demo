@@ -1,0 +1,60 @@
+apiVersion: v0.1.0
+assets: null
+module:
+  module: git@github.com:xebiaww-apps/helm-xebia-prometheus.git
+  ref:
+    tag: v0.1.1
+name: 05-prometheus
+overrides: {}
+refInfra:
+  name: eks-development-value-bank-4567
+vars:
+  prometheus:
+    alertmanager:
+      enabled: false
+    configmapReload:
+      prometheus:
+        image:
+          repository: jimmidyson/configmap-reload
+          tag: v0.5.0
+    nodeExporter:
+      fullnameOverride: prometheus-nodeexporter
+      image:
+        repository: quay.io/prometheus/node-exporter
+        tag: v1.3.0
+      resources: {}
+    pushgateway:
+      enabled: false
+      fullnameOverride: prometheus-pushgateway
+    server:
+      fullnameOverride: prometheus-server
+      image:
+        repository: quay.io/prometheus/prometheus
+        tag: v2.34.0
+      ingress:
+        annotations: {}
+        enabled: false
+        extraLabels: {}
+        hosts: []
+        path: /
+      remoteWrite:
+      - queue_config:
+          capacity: 2500
+          max_samples_per_send: 1000
+          max_shards: 200
+        sigv4:
+          region: ap-south-1
+          role_arn: arn:aws:iam::474532148129:role/Xlr8sAccountDetailsLister
+        url: https://aps-workspaces.us-east-1.amazonaws.com/workspaces/ws-4a3fb11b-af32-4f24-a70e-dee4db2b7ae1/api/v1/remote_write
+      resources: {}
+      retention: 1h
+      statefulSet:
+        enabled: true
+    serviceAccounts:
+      alertmanager:
+        create: false
+      pushgateway:
+        create: false
+      server:
+        create: false
+        name: prometheus-amp-sa

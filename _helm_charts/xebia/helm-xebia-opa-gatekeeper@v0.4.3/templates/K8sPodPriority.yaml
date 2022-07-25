@@ -1,0 +1,40 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8spodpriority
+  annotations:
+    description: Pods must have a priority or priority class
+    category: QoS
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sPodPriority
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8spodpriority
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "Deployment"
+          not input.review.object.spec.template.spec.priorityClassName
+          not input.review.object.spec.template.spec.priority
+          msg := sprintf("Deployment %v must have priority or priorityClass", [input.review.object.metadata.name])
+        }
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "Pod"
+          not input.review.object.spec.priorityClassName
+          not input.review.object.spec.priority
+          msg := sprintf("Pod %v must have priority or priorityClass", [input.review.object.metadata.name])
+        }
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "StatefulSet"
+          not input.review.object.spec.template.spec.priorityClassName
+          not input.review.object.spec.template.spec.priority
+          msg := sprintf("StatefulSet %v must have priority or priorityClass", [input.review.object.metadata.name])
+        }
+
+
+        

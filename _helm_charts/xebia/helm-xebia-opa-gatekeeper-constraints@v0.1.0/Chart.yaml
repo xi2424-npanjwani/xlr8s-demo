@@ -1,0 +1,9 @@
+apiVersion: v2
+name: helm-xebia-opa-constraints
+description: A Helm chart for OPA Gatekeeper Constraints
+
+type: application
+
+version: 0.1.0
+
+appVersion: "0.1.0"

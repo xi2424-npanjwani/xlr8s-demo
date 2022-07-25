@@ -1,0 +1,263 @@
+{
+    "K8sAllowedRepos": {
+        "section": "Parameters",
+        "sectionDec": "Configure Parameters",
+        "expand": true,
+        "type": "input_block",
+        "id": "params",
+        "fields": [
+            {
+                "component": "multiInput",
+                "label": "Allowed Repos",
+                "type": "select",
+                "defaultValue": [],
+                "id": "repos",
+                "hint": "Add allowed repos here",
+                "store": "params.repos"
+            }
+        ]
+    },
+    "K8sCapsOnDeployment": {
+        "section": "Parameters",
+        "sectionDec": "Configure Parameters",
+        "expand": true,
+        "type": "input_block",
+        "id": "params",
+        "fields": [
+            {
+                "component": "input",
+                "label": "Min Replicas for Deployments",
+                "type": "number",
+                "defaultValue": 3,
+                "id": "minReplicas",
+                "hint": "Add min replicas here",
+                "store": "params.minReplicas"
+            }
+        ]
+    },
+    "K8sCapsOnHPA": {
+        "section": "Parameters",
+        "sectionDec": "Configure Parameters",
+        "expand": true,
+        "type": "input_block",
+        "id": "params",
+        "fields": [
+            {
+                "component": "field_group",
+                "header": "",
+                "id": "parameters",
+                "fields": [
+                    {
+                        "component": "input",
+                        "label": "Min Replicas for HPA",
+                        "type": "number",
+                        "defaultValue": 3,
+                        "id": "minReplicas",
+                        "hint": "Add min replicas here",
+                        "store": "params.minReplicas"
+                    },
+                    {
+                        "component": "input",
+                        "label": "Max Replicas for HPA",
+                        "type": "number",
+                        "defaultValue": 10,
+                        "id": "maxReplicas",
+                        "hint": "Add max replicas here",
+                        "store": "params.maxReplicas"
+                    }
+                ]
+            }
+        ]
+    },
+    "K8sContainerResourceLimits": {
+        "section": "Parameters",
+        "sectionDec": "Configure Parameters",
+        "expand": true,
+        "type": "input_block",
+        "id": "params",
+        "fields": [
+            {
+                "component": "multiSelect",
+                "label": "Required Resource Types",
+                "type": "select",
+                "defaultValue": [],
+                "id": "requiredResourceTypes",
+                "hint": "Select required resource types here",
+                "store": "params.requiredResourceTypes",
+                "options": [
+                    {
+                        "value": "limits",
+                        "label": "limits"
+                    },
+                    {
+                        "value": "requests",
+                        "label": "requests"
+                    }
+                ]
+            },
+            {
+                "component": "multiSelect",
+                "label": "Required Resources",
+                "type": "select",
+                "defaultValue": [],
+                "id": "requiredResources",
+                "hint": "Select required resource here",
+                "store": "params.requiredResources",
+                "options": [
+                    {
+                        "value": "cpu",
+                        "label": "cpu"
+                    },
+                    {
+                        "value": "memory",
+                        "label": "memory"
+                    }
+                ]
+            },
+            {
+                "component": "rawInput",
+                "label": "Resource Limits",
+                "defaultValue": {
+                    "limits": {
+                        "cpu": "100m",
+                        "memory": "1Gi"
+                    },
+                    "requests": {
+                        "cpu": "100m",
+                        "memory": "1Gi"
+                    }
+                },
+                "id": "resourceLimits",
+                "hint": "Add resourceLimits here",
+                "store": "params.resourceLimits"
+            }
+        ]
+    },
+    "K8sDisallowedCapabilities": {
+        "section": "Parameters",
+        "sectionDec": "Configure Parameters",
+        "expand": true,
+        "type": "input_block",
+        "id": "params",
+        "fields": [
+            {
+                "component": "multiInput",
+                "label": "Disallowed ADD Capabilities",
+                "type": "select",
+                "defaultValue": ["NET_ADMIN"],
+                "id": "disAllowedAddCapabilies",
+                "hint": "Add Disallowed ADD Capabilies",
+                "store": "params.disAllowedAddCapabilies"
+            },
+            {
+                "component": "multiInput",
+                "label": "Disallowed DROP Capabilities",
+                "type": "select",
+                "defaultValue": [],
+                "id": "disAllowedDropCapabilies",
+                "hint": "Add Disallowed DROP Capabilies",
+                "store": "params.disAllowedDropCapabilies"
+            },
+            {
+                "component": "multiInput",
+                "label": "Skip Containers",
+                "type": "select",
+                "defaultValue": ["istio-init"],
+                "id": "skipContainers",
+                "hint": "Add Container Name to be skiped for validation",
+                "store": "params.skipContainers"
+            }
+        ]
+    },
+    "K8sDisallowedTags": {
+        "section": "Parameters",
+        "sectionDec": "Configure Parameters",
+        "expand": true,
+        "type": "input_block",
+        "id": "params",
+        "fields": [
+            {
+                "component": "multiInput",
+                "label": "Disallowed Image Tags",
+                "type": "select",
+                "defaultValue": ["latest"],
+                "id": "tags",
+                "hint": "Add tags",
+                "store": "params.tags"
+            }
+        ]
+    },
+    "K8sRequiredProbes": {
+        "section": "Parameters",
+        "sectionDec": "Configure Parameters",
+        "expand": true,
+        "type": "input_block",
+        "id": "params",
+        "fields": [
+            {
+                "component": "multiSelect",
+                "label": "Required Probes",
+                "type": "select",
+                "defaultValue": [],
+                "id": "probes",
+                "hint": "Select probes here",
+                "store": "params.probes",
+                "options": [
+                    {
+                        "value": "readinessProbe",
+                        "label": "Readiness Probe"
+                    },
+                    {
+                        "value": "livenessProbe",
+                        "label": "Liveness Probe"
+                    },
+                    {
+                        "value": "startupProbe",
+                        "label": "Startup Probe"
+                    }
+                ]
+            },
+            {
+                "component": "multiSelect",
+                "label": "Allowed Probe Types",
+                "type": "select",
+                "defaultValue": [],
+                "id": "probesTypes",
+                "hint": "Select probes type here",
+                "store": "params.probesTypes",
+                "options": [
+                    {
+                        "value": "tcpSocket",
+                        "label": "TCP Socket"
+                    },
+                    {
+                        "value": "httpGet",
+                        "label": "HTTP Get"
+                    },
+                    {
+                        "value": "exec",
+                        "label": "Exec"
+                    }
+                ]
+            }
+        ]
+    },
+    "K8sRunAsNonRoot": {
+        "section": "Parameters",
+        "sectionDec": "Configure Parameters",
+        "expand": true,
+        "type": "input_block",
+        "id": "params",
+        "fields": [
+            {
+                "component": "multiInput",
+                "label": "Skip Containers",
+                "type": "select",
+                "defaultValue": ["istio-init"],
+                "id": "skipContainers",
+                "hint": "Add container names to be skiped for validation",
+                "store": "params.skipContainers"
+            }
+        ]
+    }
+}

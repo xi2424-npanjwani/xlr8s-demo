@@ -1,0 +1,56 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8scapsonhpa
+  annotations:
+    description: Requires HPA to have min-max replicas 
+    category: QoS
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sCapsOnHPA
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            minReplicas:
+              type: integer
+            maxReplicas:
+              type: integer
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8scapsonhpa
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "HorizontalPodAutoscaler"
+          minReplicas := input.parameters.minReplicas
+          not input.review.object.spec.minReplicas
+          msg := sprintf("%v %v has no minReplicas specified, min required = %v", [input.review.object.kind, input.review.object.metadata.name, minReplicas])
+        }
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "HorizontalPodAutoscaler"
+          maxReplicas := input.parameters.maxReplicas
+          not input.review.object.spec.maxReplicas
+          msg := sprintf("%v %v has no maxReplicas specified, max required = %v", [input.review.object.kind, input.review.object.metadata.name, maxReplicas])
+        }
+
+        
+        violation[{"msg": msg}] {
+          input.review.object.kind == "HorizontalPodAutoscaler"
+          minReplicas := input.parameters.minReplicas
+          minReplicas > input.review.object.spec.minReplicas
+          msg := sprintf("%v %v has less replicas specified, replicas-provided = %v, min required = %v", [input.review.object.kind, input.review.object.metadata.name, input.review.object.spec.minReplicas, minReplicas])
+        }
+
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "HorizontalPodAutoscaler"
+          maxReplicas := input.parameters.maxReplicas
+          maxReplicas < input.review.object.spec.maxReplicas
+          msg := sprintf("%v %v has more replicas specified, replicas-provided = %v, max required = %v", [input.review.object.kind, input.review.object.metadata.name, input.review.object.spec.maxReplicas, maxReplicas])
+        }
+
+        

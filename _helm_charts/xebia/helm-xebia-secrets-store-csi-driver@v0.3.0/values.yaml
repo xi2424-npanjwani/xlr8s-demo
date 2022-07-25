@@ -1,0 +1,8 @@
+secrets-store-csi-driver:
+  enableSecretRotation: false
+  rotationPollInterval: 1m
+awsProviderInstaller: 
+  enabled: false
+  image: 
+    repository: public.ecr.aws/aws-secrets-manager/secrets-store-csi-driver-provider-aws
+    tag: 1.0.r2-2021.08.13.20.34-linux-amd64

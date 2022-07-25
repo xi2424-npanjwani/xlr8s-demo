@@ -1,0 +1,17 @@
+{{ $v := .Values.gateways }}
+{{range $j, $gateway := $v }}
+apiVersion: networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: {{$gateway.name}}
+  namespace: {{$gateway.namespace}}
+  labels:
+    app: {{$gateway.name}}
+{{- if $gateway.annotations }}
+  annotations:
+{{ toYaml $gateway.annotations | indent 4 }}
+{{- end }}
+spec:
+{{ toYaml $gateway.spec | indent 2 }}
+---
+{{ end }}

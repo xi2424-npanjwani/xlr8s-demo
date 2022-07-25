@@ -1,0 +1,34 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sAllowedRepos
+metadata:
+  name: allow-repos
+  labels:
+    severity: high
+    projectId: xlr8s-demo
+    envId: dev
+spec:
+  enforcementAction: dryrun
+
+  match:
+    namespaces:
+      - default
+
+    excludedNamespaces:
+      - kube-system
+      - kube-public
+      - kube-node-lease
+      - gatekeeper-system
+
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+      - apiGroups: ["apps"]
+        kinds: ["Deployment", "StatefulSet"]
+
+    labelSelector:
+      matchLabels:
+        app: nginx
+
+  parameters:
+    repos:
+      - gcr.io/xebia
