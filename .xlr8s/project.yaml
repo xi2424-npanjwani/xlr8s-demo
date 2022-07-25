@@ -1,0 +1,11 @@
+apiVersion: v0.1.0
+envs:
+- name: development
+  path: .xlr8s/envs/development/env.yaml
+git:
+  repoUrl: git@github.com:xi2424-npanjwani/xlr8s-demo.git
+  revision: my-demo
+name: value-bank-4567
+vars:
+  apps: null
+  policy: null
