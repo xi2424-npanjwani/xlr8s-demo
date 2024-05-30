@@ -1,0 +1,5 @@
+common_ssh_key: /secret/mountpath/xlr8s-key-ssh
+common_user: ubuntu
+dir_name: xlr8s
+hosts:
+- 95.216.33.22
