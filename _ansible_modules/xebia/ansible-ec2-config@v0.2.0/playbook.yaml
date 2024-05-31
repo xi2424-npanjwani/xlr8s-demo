@@ -1,0 +1,34 @@
+- name: Example Playbook
+  hosts: all
+  tasks:
+    - name: Create directory if it doesn't exist
+      ansible.builtin.file:
+        path: "/home/ubuntu/{{ dir_name }}"
+        state: directory
+      register: dir_result
+
+    - name: Check if local file exists
+      local_action: stat path=./pipeline.sh
+      register: local_file
+
+    - name: Copy file from local to remote
+      ansible.builtin.copy:
+        src: ./pipeline.sh
+        dest: /home/ubuntu/pipeline.sh
+      when: local_file.stat.exists
+
+    - name: Make the pipeline.sh script executable
+      ansible.builtin.file:
+        path: /home/ubuntu/pipeline.sh
+        mode: '0755'
+      when: local_file.stat.exists
+
+    - name: Execute the pipeline.sh script with the directory argument
+      command: "/home/ubuntu/pipeline.sh /home/ubuntu/{{ dir_name }}"
+      when: local_file.stat.exists
+      register: script_output
+
+    - name: Display the output of the pipeline.sh script
+      ansible.builtin.debug:
+        var: script_output.stdout
+      when: local_file.stat.exists
